@@ -1,10 +1,10 @@
 {
   "name": "actions-output-wrapper",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "Wrap any binary for use with GitHub Actions",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'No tests found'"
   },
   "keywords": [],
   "author": "Michael Heap <m@michaelheap.com>",
@@ -14,5 +14,8 @@
     "@actions/exec": "^1.1.0",
     "@actions/io": "^1.1.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "bin": {
+    "actions-output-wrapper": "./bin.js"
+  }
 }

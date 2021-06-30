@@ -6,5 +6,5 @@ module.exports = async function (originalName, newName) {
 
   // Rename the old binary to <binary>-original
   await io.mv(binaryPath, newPath);
-  return newPath;
+  return { existingBinaryPath: binaryPath, newBinaryPath: newPath };
 };

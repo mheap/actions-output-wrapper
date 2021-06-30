@@ -1,19 +1,32 @@
 const core = require("@actions/core");
+const exec = require("@actions/exec");
+const io = require("@actions/io");
 const fs = require("fs").promises;
-module.exports = async function (originalName, binaryPath) {
+const path = require("path");
+let shim = require("./shim").toString();
+module.exports = async function (binaryPath, shimBinaryPath) {
   // Update the shim to use the correct path
-  let shim = (await fs.readFile(__dirname + "/shim.js")).toString();
   shim = shim.replace(
     'const binaryName = "";',
     `const binaryName = "${binaryPath}";`
   );
 
-  // Install a wrapper in the current directory
-  const shimDir = __dirname;
-  const newBinaryPath = `${shimDir}/${originalName}`;
-  await fs.writeFile(newBinaryPath, shim);
-  await fs.chmod(newBinaryPath, "700");
+  // Prefix with a shebang + required imports so that they're not changed by NCC
+  shim = `#!/usr/bin/env node
 
-  // Add the path to the shim
-  core.addPath(shimDir);
+  const util = require("util");
+  const exec = util.promisify(require("child_process").exec);
+
+  ${shim}`;
+
+  // Execute the included function
+  shim += `\n\nshim();`;
+
+  // Write out the shim and make it executable
+  await fs.writeFile(shimBinaryPath, shim);
+  await fs.chmod(shimBinaryPath, "700");
+
+  // Add the shshimDestination
+  const shimDestination = path.dirname(shimBinaryPath);
+  core.addPath(shimDestination);
 };

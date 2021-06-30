@@ -1,27 +1,18 @@
 #!/usr/bin/env node
-(async function () {
-  const core = require("@actions/core");
-  const exec = require("@actions/exec");
+module.exports = async function shim() {
+  function escapeData(s) {
+    return s.replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+  }
+
+  function setOutput(name, data) {
+    console.log(`::set-output name=${name}::` + escapeData(data));
+  }
 
   const binaryName = "";
   const args = process.argv.slice(2);
 
-  let stdout = "";
-  let stderr = "";
+  const { stdout, stderr } = await exec(`${binaryName} ${args.join(" ")}`);
 
-  const options = {};
-  options.listeners = {
-    stdout: (data) => {
-      stdout += data.toString();
-    },
-    stderr: (data) => {
-      stderr += data.toString();
-    },
-  };
-
-  const exitCode = await exec.exec(binaryName, args, options);
-
-  core.setOutput("stdout", stdout);
-  core.setOutput("stderr", stderr);
-  core.setOutput("exitcode", exitCode);
-})();
+  setOutput("stdout", stdout);
+  setOutput("stderr", stderr);
+};

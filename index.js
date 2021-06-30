@@ -1,12 +1,18 @@
 const createShim = require("./create-shim");
 const rename = require("./rename");
 
-module.exports = async function (originalName, newName) {
+module.exports = async function ({ originalName, newName, shimBinaryPath }) {
   newName = newName || `${originalName}-original`;
 
   // Rename the original binary to a new name
-  const binaryPath = await rename(originalName, newName);
+  const { existingBinaryPath, newBinaryPath } = await rename(
+    originalName,
+    newName
+  );
+
+  // Replace the existing binary with our shim
+  shimBinaryPath = shimBinaryPath || existingBinaryPath;
 
   // Install the shim
-  await createShim(originalName, binaryPath);
+  return await createShim(newBinaryPath, shimBinaryPath);
 };
