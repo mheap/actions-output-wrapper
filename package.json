@@ -1,6 +1,6 @@
 {
   "name": "actions-output-wrapper",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Wrap any binary for use with GitHub Actions",
   "main": "index.js",
   "scripts": {
