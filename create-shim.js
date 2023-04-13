@@ -13,6 +13,7 @@ module.exports = async function (binaryPath, shimBinaryPath) {
   shim = `#!/usr/bin/env node
 
   const util = require("util");
+  const fs = require("fs");
   const exec = util.promisify(require("child_process").exec);
 
   ${shim}`;
