@@ -1,6 +1,4 @@
 const core = require("@actions/core");
-const exec = require("@actions/exec");
-const io = require("@actions/io");
 const fs = require("fs").promises;
 const path = require("path");
 let shim = require("./shim").toString();
