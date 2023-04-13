@@ -1,11 +1,18 @@
 #!/usr/bin/env node
+const fs = require("fs");
 module.exports = async function shim() {
   function escapeData(s) {
     return s.replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
   }
 
   function setOutput(name, data) {
-    console.log(`::set-output name=${name}::` + escapeData(data));
+    fs.appendFileSync(
+      process.env.GITHUB_OUTPUT,
+      `${name}=${escapeData(data)}${os.EOL}`,
+      {
+        encoding: "utf8",
+      }
+    );
   }
 
   const binaryName = "";
